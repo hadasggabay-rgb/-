@@ -72,9 +72,9 @@ body::after {
 }
 
 .menu-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
   width: 44px;
   height: 44px;
   border: none;
@@ -85,7 +85,7 @@ body::after {
   cursor: pointer;
   box-shadow: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
-  z-index: 100;
+  z-index: 3;
 }
 
 .menu-toggle:hover {
@@ -236,6 +236,8 @@ button {
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 8px;
+  order: -1;
+  flex-shrink: 0;
 }
 
 .btn-icon:hover {
@@ -305,15 +307,35 @@ button {
 
 .result-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 16px;
+  gap: 12px;
+  flex-direction: row;
 }
 
 .rating {
   font-size: 2.2rem;
   font-weight: 900;
   margin: 0;
+  white-space: nowrap;
+  flex: 1;
+  text-align: right;
+  direction: rtl;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.rating-icon {
+  order: 1;
+  font-size: 2.2rem;
+}
+
+.rating-label {
+  order: 0;
 }
 
 .rating.good {
@@ -401,6 +423,18 @@ button {
   color: var(--accent-2);
   margin-bottom: 16px;
   font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  direction: rtl;
+}
+
+.favorites-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: normal;
+  font-style: italic;
 }
 
 .favorites-list {
@@ -556,14 +590,14 @@ button {
   }
   
   .header {
-    padding-right: 0;
+    padding-right: 60px;
   }
   
   .menu-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 3;
   }
   
   .search-row {
@@ -632,8 +666,22 @@ button {
   min-height: 100vh;
   margin: 0;
   background-attachment: fixed;
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+}
+
+.recommended-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #1b1e3f 0%, #472b62 40%, #fb7131 95%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .recommended-page::after {

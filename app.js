@@ -418,7 +418,7 @@ async function evaluateLocation(location) {
 
     els.placeLabel.textContent = location.label || 'מיקום נבחר';
     const icon = score.klass === 'good' ? '🌟' : score.klass === 'nice' ? '✨' : score.klass === 'clear' ? '☀️' : '🌫️';
-    els.ratingText.textContent = `${icon} ${score.label}`;
+    els.ratingText.innerHTML = `<span class="rating-icon">${icon}</span> <span class="rating-label">${score.label}</span>`;
     els.ratingText.className = `rating ${score.klass}`;
     els.sunsetTime.textContent = `שעת שקיעה משוערת: ${formatLocalTime(pick.sunsetIso)}`;
     if (pick.twilightStart && pick.twilightEnd) {
