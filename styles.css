@@ -68,12 +68,13 @@ body::after {
   margin-bottom: 40px;
   animation: fadeInDown 0.6s ease-out;
   position: relative;
+  padding-right: 60px;
 }
 
 .menu-toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: fixed;
+  top: 20px;
+  right: 20px;
   width: 44px;
   height: 44px;
   border: none;
@@ -84,7 +85,7 @@ body::after {
   cursor: pointer;
   box-shadow: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
-  z-index: 3;
+  z-index: 100;
 }
 
 .menu-toggle:hover {
@@ -198,6 +199,11 @@ button {
   background: var(--gradient-1);
   color: white;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-direction: row-reverse;
 }
 
 .btn-primary:hover {
@@ -549,38 +555,61 @@ button {
     font-size: 2rem;
   }
   
+  .header {
+    padding-right: 0;
+  }
+  
+  .menu-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+  }
+  
   .search-row {
-    flex-direction: row;
-    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
   
   .input-wrapper {
-    flex: 1;
+    width: 100%;
+    max-width: 100%;
     flex-direction: row;
+    justify-content: center;
   }
   
   .input-wrapper input {
     flex: 1;
+    text-align: right;
   }
   
   .input-wrapper button {
     width: auto;
-    min-width: 80px;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 16px;
+    flex-direction: row-reverse;
   }
   
   button {
-    width: auto;
-    min-width: 120px;
+    width: 100%;
+    max-width: 300px;
   }
   
   .day-selector {
-    flex-direction: row;
-    gap: 8px;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
   }
   
   .day-btn {
-    width: auto;
-    flex: 1;
+    width: 100%;
+    max-width: 300px;
   }
   
   .favorites-list {
@@ -598,11 +627,13 @@ button {
 }
 
 .recommended-page {
-  background: linear-gradient(180deg, #ff6b6b 0%, #ff8e53 15%, #ffa726 30%, #ffb74d 45%, #ffcc80 60%, #ffe0b2 75%, #fff3e0 90%, #fff8f0 100%);
-  color: #1a1a1a;
+  background: linear-gradient(180deg, #1b1e3f 0%, #472b62 40%, #fb7131 95%);
+  color: #f5f5f5;
   min-height: 100vh;
   margin: 0;
   background-attachment: fixed;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 
 .recommended-page::after {
@@ -624,29 +655,25 @@ button {
 .recommended-header h1 {
   margin: 16px 0 12px;
   font-size: 2.4rem;
-  color: #1a1a1a;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #ffe4c4;
 }
 
 .back-link {
   position: absolute;
   top: 0;
   right: 0;
-  color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 1.2rem;
-  padding: 8px 12px;
+  font-size: 0.95rem;
+  padding: 6px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: rgba(255, 255, 255, 0.9);
-  transition: background 0.2s ease, transform 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.2s ease;
   z-index: 10;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .back-link:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .recommended-grid {
@@ -658,12 +685,11 @@ button {
 .region-title {
   grid-column: 1 / -1;
   font-size: 1.8rem;
-  color: #1a1a1a;
+  color: #ffe4c4;
   margin: 32px 0 16px;
   padding-bottom: 12px;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
   text-align: right;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .region-title:first-of-type {
@@ -671,19 +697,20 @@ button {
 }
 
 .viewpoint-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .viewpoint-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }
 
 .viewpoint-content {
@@ -696,25 +723,25 @@ button {
 .viewpoint-content h2 {
   margin: 0;
   font-size: 1.05rem;
-  color: #1a1a1a;
+  color: #ffe4c4;
   font-weight: 700;
   line-height: 1.3;
 }
 
 .viewpoint-location {
   margin: 0;
-  color: #4a4a4a;
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.85rem;
   font-style: italic;
 }
 
 .viewpoint-memorial {
   margin: 0;
-  color: #2d2d2d;
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.85rem;
   line-height: 1.5;
   padding-top: 6px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .recommended-card {
@@ -751,18 +778,18 @@ button {
 @media (max-width: 640px) {
   .recommended-header {
     position: relative;
-    padding-top: 50px;
+    padding-top: 40px;
   }
   
   .recommended-header h1 {
-    font-size: 2rem;
+    font-size: 1.9rem;
   }
   
   .back-link {
     top: 0;
     right: 0;
-    font-size: 1.1rem;
-    padding: 6px 10px;
+    font-size: 0.9rem;
+    padding: 5px 8px;
   }
   
   .recommended-grid {
@@ -771,16 +798,12 @@ button {
   }
   
   .region-title {
-    font-size: 1.6rem;
-    margin: 28px 0 14px;
+    font-size: 1.5rem;
+    margin: 24px 0 12px;
   }
   
-  .viewpoint-card {
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
-  }
-  
-  .viewpoint-content {
-    padding: 16px;
+  .viewpoint-image {
+    height: 140px;
   }
   
   .viewpoint-content h2 {
