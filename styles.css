@@ -248,11 +248,11 @@ button {
 }
 
 .btn-icon {
-  background: transparent;
-  border: none;
-  color: var(--accent-2);
-  font-size: 1.5rem;
-  padding: 8px;
+  background: transparent !important;
+  border: none !important;
+  color: var(--accent-2) !important;
+  font-size: 1.5rem !important;
+  padding: 8px !important;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 8px;
@@ -261,10 +261,13 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: none !important;
+  min-width: auto !important;
+  min-height: auto !important;
 }
 
 .btn-icon:hover {
-  background: rgba(255, 209, 102, 0.1);
+  background: rgba(255, 209, 102, 0.1) !important;
   transform: scale(1.1);
 }
 
