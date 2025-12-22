@@ -77,9 +77,9 @@ body::after {
 }
 
 .menu-toggle {
-  position: fixed;
-  top: 15px;
-  right: 15px;
+  position: fixed !important;
+  top: 15px !important;
+  right: 15px !important;
   width: 44px;
   height: 44px;
   border: none;
@@ -90,7 +90,9 @@ body::after {
   cursor: pointer;
   box-shadow: none;
   transition: transform 0.2s ease, opacity 0.2s ease;
-  z-index: 1000;
+  z-index: 1000 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .menu-toggle:hover {
@@ -99,9 +101,9 @@ body::after {
 }
 
 .menu-panel {
-  position: fixed;
-  top: 64px;
-  right: 15px;
+  position: fixed !important;
+  top: 64px !important;
+  right: 15px !important;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -110,7 +112,8 @@ body::after {
   border-radius: 12px;
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  z-index: 999;
+  z-index: 999 !important;
+  margin: 0 !important;
 }
 
 .menu-item {
@@ -250,20 +253,22 @@ button {
 .btn-icon {
   background: transparent !important;
   border: none !important;
-  color: var(--accent-2) !important;
-  font-size: 1.5rem !important;
+  color: inherit !important;
+  font-size: 1.8rem !important;
   padding: 8px !important;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 8px;
   flex-shrink: 0;
   order: 0;
-  display: flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   box-shadow: none !important;
   min-width: auto !important;
   min-height: auto !important;
+  line-height: 1 !important;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
 }
 
 .btn-icon:hover {
