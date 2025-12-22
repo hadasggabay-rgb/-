@@ -78,8 +78,8 @@ body::after {
 
 .menu-toggle {
   position: fixed !important;
-  top: 15px !important;
-  right: 15px !important;
+  top: 0 !important;
+  right: 0 !important;
   width: 44px;
   height: 44px;
   border: none;
@@ -102,8 +102,8 @@ body::after {
 
 .menu-panel {
   position: fixed !important;
-  top: 64px !important;
-  right: 15px !important;
+  top: 49px !important;
+  right: 0 !important;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -254,7 +254,7 @@ button {
   background: transparent !important;
   border: none !important;
   color: inherit !important;
-  font-size: 1.8rem !important;
+  font-size: 2rem !important;
   padding: 8px !important;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -269,6 +269,8 @@ button {
   min-height: auto !important;
   line-height: 1 !important;
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  -webkit-text-fill-color: initial !important;
+  text-fill-color: initial !important;
 }
 
 .btn-icon:hover {
@@ -362,7 +364,29 @@ button {
 
 .rating-icon {
   order: 1;
-  font-size: 2.2rem;
+  font-size: 2rem !important;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  -webkit-text-fill-color: initial !important;
+  text-fill-color: initial !important;
+}
+
+.rating-icon:hover {
+  transform: scale(1.2);
+}
+
+.save-favorite-icon {
+  font-size: 2rem !important;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+  -webkit-text-fill-color: initial !important;
+  text-fill-color: initial !important;
+}
+
+.save-favorite-icon:hover {
+  transform: scale(1.2);
 }
 
 .rating-label {
@@ -506,23 +530,25 @@ button {
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(239, 71, 111, 0.2);
+  background: transparent;
   border: none;
   color: var(--bad);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 0;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 1.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  font-weight: bold;
 }
 
 .favorite-item-remove:hover {
-  background: rgba(239, 71, 111, 0.4);
-  transform: scale(1.1);
+  background: transparent;
+  transform: scale(1.2);
+  opacity: 0.8;
 }
 
 .footer {
@@ -631,17 +657,17 @@ button {
   }
   
   .menu-toggle {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
   }
   
   .menu-panel {
-    position: fixed;
-    top: 59px;
-    right: 10px;
-    z-index: 999;
+    position: fixed !important;
+    top: 44px !important;
+    right: 0 !important;
+    z-index: 999 !important;
   }
   
   .search-row {
