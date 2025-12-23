@@ -633,28 +633,44 @@ async function evaluateLocation(location) {
     els.ratingText.innerHTML = `<span class="rating-icon save-favorite-icon" data-lat="${location.latitude}" data-lon="${location.longitude}" data-name="${(location.label || 'מיקום נבחר').replace(/"/g, '&quot;')}">${icon}</span> <span class="rating-label">${score.label}</span>`;
     els.ratingText.className = `rating ${score.klass}`;
     
+    // Check if already in favorites and setup click handler
+    const favorites = getFavorites();
+    const isFavorite = favorites.some(f => 
+      f.latitude === location.latitude && f.longitude === location.longitude
+    );
+    
     // Add click handler to star icon
     setTimeout(() => {
-      const starIcon = els.ratingText.querySelector('.save-favorite-icon');
+      const starIcon = els.ratingText?.querySelector('.save-favorite-icon');
       if (starIcon) {
         starIcon.style.cursor = 'pointer';
-        starIcon.addEventListener('click', (e) => {
+        starIcon.style.opacity = isFavorite ? '0.5' : '1';
+        starIcon.title = isFavorite ? 'כבר שמור כמועדף' : 'לחץ לשמירה כמועדף';
+        
+        // Remove existing listeners to avoid duplicates
+        const newStarIcon = starIcon.cloneNode(true);
+        starIcon.parentNode.replaceChild(newStarIcon, starIcon);
+        
+        newStarIcon.addEventListener('click', (e) => {
           e.stopPropagation();
-          const lat = parseFloat(starIcon.dataset.lat);
-          const lon = parseFloat(starIcon.dataset.lon);
-          const name = starIcon.dataset.name;
+          const lat = parseFloat(newStarIcon.dataset.lat);
+          const lon = parseFloat(newStarIcon.dataset.lon);
+          const name = newStarIcon.dataset.name;
           addFavorite({ latitude: lat, longitude: lon, label: name });
           renderFavorites();
           // Update star icon state
-          const favorites = getFavorites();
-          const isFavorite = favorites.some(f => 
+          const updatedFavorites = getFavorites();
+          const nowFavorite = updatedFavorites.some(f => 
             f.latitude === lat && f.longitude === lon
           );
-          starIcon.style.opacity = isFavorite ? '0.5' : '1';
-          starIcon.title = isFavorite ? 'כבר שמור כמועדף' : 'לחץ לשמירה כמועדף';
+          if (newStarIcon) {
+            newStarIcon.style.opacity = nowFavorite ? '0.5' : '1';
+            newStarIcon.title = nowFavorite ? 'כבר שמור כמועדף' : 'לחץ לשמירה כמועדף';
+          }
         });
       }
-    }, 100);
+    }, 50);
+    
     els.sunsetTime.textContent = `שעת שקיעה משוערת: ${formatLocalTime(pick.sunsetIso)}`;
     if (pick.twilightStart && pick.twilightEnd) {
       els.twilightRange.textContent = `טווח השקיעה: ${formatLocalTime(pick.twilightStart)} - ${formatLocalTime(pick.twilightEnd)}`;
@@ -666,19 +682,6 @@ async function evaluateLocation(location) {
     // הוספת ההסבר (ללא נתונים טכניים)
     let explainHTML = score.reasons.map(r => `• ${r}`).join('<br/>');
     els.explain.innerHTML = explainHTML;
-    
-    // Check if already in favorites - update star icon appearance
-    setTimeout(() => {
-      const starIcon = els.ratingText.querySelector('.save-favorite-icon');
-      if (starIcon) {
-        const favorites = getFavorites();
-        const isFavorite = favorites.some(f => 
-          f.latitude === location.latitude && f.longitude === location.longitude
-        );
-        starIcon.style.opacity = isFavorite ? '0.5' : '1';
-        starIcon.title = isFavorite ? 'כבר שמור כמועדף' : 'לחץ לשמירה כמועדף';
-      }
-    }, 100);
     
     hide(els.loading);
     show(els.result);
@@ -704,7 +707,10 @@ function setupDaySelector() {
 }
 
 function setupMenu() {
-  if (!els.menuToggle || !els.menuPanel) return;
+  if (!els.menuToggle || !els.menuPanel) {
+    console.warn('Menu elements not found');
+    return;
+  }
 
   const closeMenu = () => hide(els.menuPanel);
   const openMenu = () => show(els.menuPanel);
@@ -731,12 +737,20 @@ function setupMenu() {
     }
   });
 
+  // Use event delegation for menu items
   els.menuPanel.addEventListener('click', (ev) => {
     const item = ev.target.closest('.menu-item');
     if (!item) return;
+    
     ev.preventDefault();
+    ev.stopPropagation();
+    
     const url = item.dataset.url;
+    console.log('Menu item clicked, URL:', url);
+    
     if (url) {
+      closeMenu();
+      // Navigate immediately
       window.location.href = url;
     } else {
       const targetId = item.dataset.target;
@@ -746,8 +760,8 @@ function setupMenu() {
           section.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
+      closeMenu();
     }
-    closeMenu();
   });
 }
 
