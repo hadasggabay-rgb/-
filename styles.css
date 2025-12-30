@@ -82,7 +82,7 @@ body::after {
 .menu-toggle {
   position: absolute;
   top: 0;
-  right: -5px;
+  right: -10px;
   width: 44px;
   height: 44px;
   border: none;
@@ -106,7 +106,7 @@ body::after {
 .menu-panel {
   position: absolute;
   top: 49px;
-  right: -5px;
+  right: -10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -357,17 +357,17 @@ button {
   margin: 0;
   white-space: nowrap;
   flex: 1;
-  text-align: left;
-  direction: ltr;
+  text-align: right;
+  direction: rtl;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: flex-end;
   gap: 8px;
   flex-wrap: nowrap;
 }
 
 .rating-icon {
-  order: 0;
+  order: 1;
   font-size: 2rem !important;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -394,7 +394,7 @@ button {
 }
 
 .rating-label {
-  order: 1;
+  order: 0;
 }
 
 .rating.good {
@@ -664,7 +664,7 @@ button {
   .menu-toggle {
     position: absolute !important;
     top: 0 !important;
-    right: -5px !important;
+    right: -10px !important;
     width: 44px !important;
     height: 44px !important;
     z-index: 100 !important;
@@ -675,7 +675,7 @@ button {
   .menu-panel {
     position: absolute !important;
     top: 49px !important;
-    right: -5px !important;
+    right: -10px !important;
     z-index: 99 !important;
     margin: 0 !important;
   }
@@ -766,22 +766,22 @@ button {
   .rating {
     position: relative;
     width: 100%;
-    justify-content: flex-start;
-    text-align: left;
-    direction: ltr;
+    justify-content: flex-end;
+    text-align: right;
+    direction: rtl;
   }
   
   .rating-icon {
     position: absolute;
     left: 0;
-    order: 0;
+    order: 1;
   }
   
   .rating-label {
-    order: 1;
-    text-align: left;
+    order: 0;
+    text-align: right;
     width: 100%;
-    margin-left: 50px;
+    margin-right: 50px;
   }
 }
 
@@ -793,6 +793,10 @@ button {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.recommended-page .footer {
+  display: none !important;
 }
 
 .recommended-page body::after,
