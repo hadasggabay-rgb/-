@@ -425,22 +425,26 @@ button {
 }
 
 .sunset-time {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--accent-2);
-  font-weight: 600;
-  margin: 12px 0;
+  font-weight: 500;
+  margin: 8px 0 12px;
   text-align: right;
   direction: rtl;
+  display: inline-block;
+  width: 100%;
 }
 
 .twilight-range {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #ff8e53;
-  font-weight: 500;
-  margin: 8px 0 12px;
+  font-weight: 600;
+  margin: 12px 0;
   opacity: 0.9;
   text-align: right;
   direction: rtl;
+  display: inline-block;
+  width: 100%;
 }
 
 .date-label {
@@ -491,8 +495,29 @@ button {
   animation: fadeInUp 0.6s ease-out 0.2s both;
 }
 
+.viewpoints-btn {
+  display: inline-block;
+  background: #ffd700;
+  color: #000;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  direction: rtl;
+}
+
+.viewpoints-btn:hover {
+  background: #ffed4e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+}
+
 .favorites-section h3 {
-  color: var(--accent-2);
+  color: #d32f2f;
   margin-bottom: 16px;
   font-size: 1.2rem;
   display: flex;
@@ -545,8 +570,8 @@ button {
 
 .favorite-item-remove {
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 4px;
+  left: 4px;
   background: transparent !important;
   border: none !important;
   color: var(--bad);
@@ -805,6 +830,15 @@ button {
   .rating {
     gap: 12px;
   }
+  
+  .sunset-time,
+  .twilight-range,
+  .date-label {
+    text-align: right;
+    direction: rtl;
+    width: 100%;
+    display: block;
+  }
 }
 
 .recommended-page {
@@ -869,10 +903,11 @@ body.recommended-page::after {
   margin-bottom: 32px;
   position: relative;
   overflow-x: hidden;
+  padding-top: 8px;
 }
 
 .recommended-header h1 {
-  margin: 16px 0 12px;
+  margin: 8px 0 12px;
   font-size: 2.4rem;
   color: #ffe4c4;
 }
@@ -883,16 +918,17 @@ body.recommended-page::after {
   right: 0;
   color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  font-size: 0.95rem;
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: background 0.2s ease;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  transition: transform 0.2s ease;
   z-index: 10;
 }
 
 .back-link:hover {
-  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(-3px);
 }
 
 .recommended-grid {
@@ -998,7 +1034,7 @@ body.recommended-page::after {
   .recommended-header {
     position: relative;
   overflow-x: hidden;
-    padding-top: 40px;
+    padding-top: 8px;
   }
   
   .recommended-header h1 {
@@ -1008,8 +1044,11 @@ body.recommended-page::after {
   .back-link {
     top: 0;
     right: 0;
-    font-size: 0.9rem;
-    padding: 5px 8px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
   }
   
   .recommended-grid {

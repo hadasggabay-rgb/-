@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#ff6b35" />
   <title>גלו את איכות השקיעה בכל מקום בארץ</title>
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css?v=10" />
   <link rel="manifest" href="manifest.json" />
 </head>
 <body>
-  <button id="menuToggle" class="menu-toggle" aria-label="תפריט">☰</button>
-  <nav id="menuPanel" class="menu-panel hidden" aria-label="תוכן העניינים">
-    <button class="menu-item" data-url="recommended.html">מצפים מומלצים</button>
-  </nav>
   <main class="container">
     <header class="header">
       <h1>גלו את איכות השקיעה בכל מקום בארץ 🌅</h1>
@@ -42,6 +39,7 @@
     </section>
 
     <section id="favorites" class="favorites-section">
+      <a href="recommended.html" class="viewpoints-btn">מצפים מומלצים →</a>
       <h3>מיקומים מועדפים <span class="favorites-hint">(לחצו על הכוכב לשמירת המיקום כמועדף)</span></h3>
       <div id="favoritesList" class="favorites-list"></div>
     </section>
