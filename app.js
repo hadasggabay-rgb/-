@@ -909,10 +909,29 @@ function scoreSunsetPoint(forecast, idx) {
     };
   }
   
-  // אם עננות בינונית גבוהה מדי (55%+) - זה עלול להסתיר את השקיעה = שקיעה רגילה
+  // שקיעה יפה - לפני הבדיקה ל"שקיעה רגילה", בואו נבדוק אם יש תנאים לשקיעה יפה
+  // גם עם עננות בינונית גבוהה (עד 70%) אם עננות נמוכה נמוכה - יכול להיות יפה
+  if (midCloud >= 50 && midCloud < 70 && lowCloud <= 40 && cloudTotal <= 90) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+  
+  // שקיעה יפה - גם עם עננות כללית גבוהה (עד 90%) אם עננות נמוכה נמוכה ובינונית סבירה
+  if (cloudTotal >= 75 && cloudTotal <= 90 && lowCloud <= 50 && midCloud < 70) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+  
+  // אם עננות בינונית גבוהה מדי (70%+) - זה עלול להסתיר את השקיעה = שקיעה רגילה
   // מקרה: עננות כללית 78%, נמוכה 0%, בינונית 73%, גבוהה 39% = שקיעה רגילה
-  // גם אם עננות נמוכה גבוהה (60%+) - העננים האפורים יחסמו את השקיעה
-  if ((midCloud >= 55 && cloudTotal >= 75) || (lowCloud >= 60 && cloudTotal >= 80)) {
+  // גם אם עננות נמוכה גבוהה (65%+) - העננים האפורים יחסמו את השקיעה
+  if ((midCloud >= 70 && cloudTotal >= 75) || (lowCloud >= 65 && cloudTotal >= 80)) {
     return {
       label: 'שקיעה רגילה',
       klass: 'clear',
@@ -1004,6 +1023,16 @@ function scoreSunsetPoint(forecast, idx) {
   // שקיעה יפה - גם עם עננות כללית בינונית (עד 90%) אם יש עננות בינונית-גבוהה כלשהי
   // ועננות נמוכה לא חוסמת (עד 80%)
   if ((midCloud + highCloud) >= 3 && cloudTotal <= 90 && lowCloud <= 80 && midCloud < 70) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+  
+  // שקיעה יפה - הרחבה נוספת: גם עם עננות כללית גבוהה (עד 92%) אם עננות נמוכה נמוכה
+  // זה כולל מקרים כמו ירושלים היום שבה השקיעה בפועל יפה
+  if (cloudTotal >= 70 && cloudTotal <= 92 && lowCloud <= 55 && midCloud < 70 && (midCloud + highCloud) >= 2) {
     return {
       label: 'שקיעה יפה',
       klass: 'nice',
