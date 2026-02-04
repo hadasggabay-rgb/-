@@ -876,9 +876,13 @@ function scoreSunsetPoint(forecast, idx) {
   const blockingMidCloud = midCloud >= 60 && cloudTotal >= 85 && lowCloud >= 50;
   // שילוב של עננות נמוכה ובינונית גבוהה - חוסם את השקיעה
   const blockingCombo = lowCloud >= 65 && midCloud >= 55 && cloudTotal >= 85;
+  // עננות בינונית גבוהה מאוד (75%+) עם עננות כללית גבוהה (90%+) - חוסמת את השקיעה
+  const veryBlockingMidCloud = midCloud >= 75 && cloudTotal >= 90;
+  // עננות נמוכה גבוהה מאוד (75%+) - חוסמת את השקיעה
+  const veryBlockingLowCloud = lowCloud >= 75 && cloudTotal >= 88;
 
   // בדיקה ראשונה - האם יש משהו שחוסם לחלוטין?
-  if (heavyRain || veryLikelyRain || veryLowVisibility || heavyOvercast || veryHeavyOvercast || heavyMidCloud || blockingLowCloud || blockingMidCloud || blockingCombo) {
+  if (heavyRain || veryLikelyRain || veryLowVisibility || heavyOvercast || veryHeavyOvercast || heavyMidCloud || blockingLowCloud || blockingMidCloud || blockingCombo || veryBlockingMidCloud || veryBlockingLowCloud) {
     return {
       label: 'לא ניתן לראות אותה',
       klass: 'bad',
@@ -887,11 +891,9 @@ function scoreSunsetPoint(forecast, idx) {
   }
 
   // ============================================
-  // קריטריונים ספציפיים למקרים ידועים
+  // שקיעה מהממת - התנאים האידיאליים
   // ============================================
   // נתניה - עננות גבוהה גבוהה (80%+) עם עננות נמוכה נמוכה (10% או פחות) = שקיעה מהממת!
-  // זה בדיוק מה שהיה בנתניה: עננות כללית 100%, נמוכה 2%, בינונית 0%, גבוהה 100%
-  // העננות הגבוהה תתלבש בצבעים יפים והעננות הנמוכה לא תחסום את האופק
   if (highCloud >= 80 && lowCloud <= 10 && cloudTotal >= 85) {
     return { 
       label: 'שקיעה מהממת!', 
@@ -908,91 +910,53 @@ function scoreSunsetPoint(forecast, idx) {
       reasons: ['עננות גבוהה טובה עם עננות נמוכה מועטה - תנאים מצוינים לשקיעה צבעונית!'] 
     };
   }
-  
-  // שקיעה יפה - לפני הבדיקה ל"שקיעה רגילה", בואו נבדוק אם יש תנאים לשקיעה יפה
-  // גם עם עננות בינונית גבוהה (עד 70%) אם עננות נמוכה נמוכה - יכול להיות יפה
-  if (midCloud >= 50 && midCloud < 70 && lowCloud <= 40 && cloudTotal <= 90) {
-    return {
-      label: 'שקיעה יפה',
-      klass: 'nice',
-      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
-    };
-  }
-  
-  // שקיעה יפה - גם עם עננות כללית גבוהה (עד 90%) אם עננות נמוכה נמוכה ובינונית סבירה
-  if (cloudTotal >= 75 && cloudTotal <= 90 && lowCloud <= 50 && midCloud < 70) {
-    return {
-      label: 'שקיעה יפה',
-      klass: 'nice',
-      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
-    };
-  }
-  
-  // אם עננות בינונית גבוהה מדי (70%+) - זה עלול להסתיר את השקיעה = שקיעה רגילה
-  // מקרה: עננות כללית 78%, נמוכה 0%, בינונית 73%, גבוהה 39% = שקיעה רגילה
-  // גם אם עננות נמוכה גבוהה (65%+) - העננים האפורים יחסמו את השקיעה
-  if ((midCloud >= 70 && cloudTotal >= 75) || (lowCloud >= 65 && cloudTotal >= 80)) {
-    return {
-      label: 'שקיעה רגילה',
-      klass: 'clear',
-      reasons: ['עננות גבוהה מדי עלולה להסתיר את השקיעה']
-    };
-  }
-  // ============================================
 
   // שקיעה מהממת - התנאים האידיאליים: מעט עננות נמוכה + עננות בינונית/גבוהה טובה
-  // אבל לא אם עננות בינונית גבוהה מדי (55%+) - זה עלול להסתיר
-  // ועננות נמוכה לא גבוהה מדי (לא יותר מ-50%) - אחרת העננים האפורים יחסמו
   const great = lowCloud <= 50 && (midCloud + highCloud) >= 15 && cloudTotal <= 94 && (midCloud ?? 0) < 55;
   if (great) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - עננות גבוהה טובה עם מעט עננות נמוכה
-  // עננות נמוכה לא יותר מ-50% - אחרת העננים האפורים יחסמו
   const greatHigh = highCloud >= 25 && lowCloud <= 50 && cloudTotal <= 94 && midCloud < 55;
   if (greatHigh) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - עננות בינונית טובה עם מעט עננות נמוכה
-  // עננות נמוכה לא יותר מ-50% - אחרת העננים האפורים יחסמו
   const greatMid = midCloud >= 20 && midCloud < 55 && lowCloud <= 50 && cloudTotal <= 93;
   if (greatMid) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - שילוב של עננות בינונית וגבוהה עם עננות נמוכה מועטה
-  // עננות נמוכה לא יותר מ-55% - אחרת העננים האפורים יחסמו
   const greatCombo = (midCloud + highCloud) >= 30 && lowCloud <= 55 && cloudTotal <= 92 && midCloud < 55;
   if (greatCombo) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - עננות בינונית-גבוהה טובה עם עננות נמוכה מועטה
-  // עננות נמוכה לא יותר מ-55% - אחרת העננים האפורים יחסמו
   const greatAlt = (midCloud + highCloud) >= 40 && cloudTotal <= 90 && lowCloud <= 55 && midCloud < 55;
   if (greatAlt) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - עננות בינונית-גבוהה בינונית עם עננות נמוכה מועטה
-  // עננות נמוכה לא יותר מ-60% - אחרת העננים האפורים יחסמו
   const greatModerate = (midCloud + highCloud) >= 25 && cloudTotal <= 88 && lowCloud <= 60 && midCloud < 55;
   if (greatModerate) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
   // שקיעה מהממת - גם עם עננות בינונית-גבוהה קלה אם אין עננות נמוכה דחוסה
-  // עננות נמוכה לא יותר מ-50% - אחרת העננים האפורים יחסמו
   const greatLight = (midCloud + highCloud) >= 20 && cloudTotal <= 90 && lowCloud <= 50 && midCloud < 55;
   if (greatLight) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
   }
 
-  // שקיעה יפה - רק עם תנאים טובים באמת!
-  // צריך עננות בינונית-גבוהה (לפחות 15%) עם עננות כללית סבירה (לא יותר מ-85%)
-  // ועננות נמוכה לא גבוהה מדי (לא יותר מ-70%)
+  // ============================================
+  // שקיעה יפה - כל התנאים האפשריים
+  // ============================================
+  // שקיעה יפה - עננות בינונית-גבוהה (לפחות 15%) עם עננות כללית סבירה
   if ((midCloud + highCloud) >= 15 && cloudTotal <= 85 && lowCloud <= 70) {
     return {
       label: 'שקיעה יפה',
@@ -1011,7 +975,6 @@ function scoreSunsetPoint(forecast, idx) {
   }
 
   // שקיעה יפה - הרחבה: גם עם עננות בינונית-גבוהה קלה (לפחות 5%) אם עננות כללית סבירה
-  // זה כולל מקרים כמו ירושלים היום שבה השקיעה בפועל יפה
   if ((midCloud + highCloud) >= 5 && cloudTotal <= 90 && lowCloud <= 75 && midCloud < 65) {
     return {
       label: 'שקיעה יפה',
@@ -1021,7 +984,6 @@ function scoreSunsetPoint(forecast, idx) {
   }
 
   // שקיעה יפה - גם עם עננות כללית בינונית (עד 90%) אם יש עננות בינונית-גבוהה כלשהי
-  // ועננות נמוכה לא חוסמת (עד 80%)
   if ((midCloud + highCloud) >= 3 && cloudTotal <= 90 && lowCloud <= 80 && midCloud < 70) {
     return {
       label: 'שקיעה יפה',
@@ -1030,8 +992,7 @@ function scoreSunsetPoint(forecast, idx) {
     };
   }
   
-  // שקיעה יפה - הרחבה נוספת: גם עם עננות כללית גבוהה (עד 92%) אם עננות נמוכה נמוכה
-  // זה כולל מקרים כמו ירושלים היום שבה השקיעה בפועל יפה
+  // שקיעה יפה - גם עם עננות כללית גבוהה (עד 92%) אם עננות נמוכה נמוכה
   if (cloudTotal >= 70 && cloudTotal <= 92 && lowCloud <= 55 && midCloud < 70 && (midCloud + highCloud) >= 2) {
     return {
       label: 'שקיעה יפה',
@@ -1040,6 +1001,54 @@ function scoreSunsetPoint(forecast, idx) {
     };
   }
 
+  // שקיעה יפה - גם עם עננות בינונית גבוהה (עד 70%) אם עננות נמוכה נמוכה
+  if (midCloud >= 50 && midCloud < 70 && lowCloud <= 40 && cloudTotal <= 90) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+  
+  // שקיעה יפה - גם עם עננות כללית גבוהה (עד 90%) אם עננות נמוכה נמוכה ובינונית סבירה
+  if (cloudTotal >= 75 && cloudTotal <= 90 && lowCloud <= 50 && midCloud < 70) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+
+  // שקיעה יפה - הרחבה נוספת: גם עם עננות בינונית בינונית-גבוהה (45-70%) אם עננות נמוכה סבירה
+  if (midCloud >= 45 && midCloud < 70 && lowCloud <= 60 && cloudTotal <= 92) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+
+  // שקיעה יפה - גם עם עננות כללית בינונית-גבוהה (65-95%) אם עננות נמוכה לא חוסמת
+  if (cloudTotal >= 65 && cloudTotal <= 95 && lowCloud <= 60 && midCloud < 75 && (midCloud + highCloud) >= 5) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+
+  // שקיעה יפה - גם עם עננות נמוכה בינונית (40-65%) אם יש עננות בינונית-גבוהה טובה
+  if (lowCloud >= 40 && lowCloud < 65 && (midCloud + highCloud) >= 10 && cloudTotal <= 88 && midCloud < 70) {
+    return {
+      label: 'שקיעה יפה',
+      klass: 'nice',
+      reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
+    };
+  }
+
+  // ============================================
+  // שקיעה רגילה - רק במקרים של שמיים נקיים או תנאים שלא מתאימים לקטגוריות אחרות
+  // ============================================
   // רק שמיים כמעט נקיים לגמרי = שקיעה רגילה
   if (cloudTotal <= 20 && (midCloud + highCloud) < 1 && lowCloud < 10) {
     return {
@@ -1049,11 +1058,42 @@ function scoreSunsetPoint(forecast, idx) {
     };
   }
 
-  // ברירת המחדל - שקיעה רגילה (בדרך כלל יש שקיעה רגילה)
+  // שקיעה רגילה - רק אם עננות בינונית גבוהה מאוד (70%+) עם עננות כללית גבוהה מאוד (90%+)
+  // אבל לא אם זה כבר נכלל ב"לא ניתן לראות"
+  if (midCloud >= 70 && cloudTotal >= 90 && lowCloud >= 60) {
+    return {
+      label: 'שקיעה רגילה',
+      klass: 'clear',
+      reasons: ['עננות גבוהה מדי עלולה להסתיר את השקיעה']
+    };
+  }
+
+  // שקיעה רגילה - רק אם עננות נמוכה גבוהה מאוד (70%+) עם עננות כללית גבוהה מאוד (90%+)
+  // אבל לא אם זה כבר נכלל ב"לא ניתן לראות"
+  if (lowCloud >= 70 && cloudTotal >= 90 && midCloud >= 60) {
+    return {
+      label: 'שקיעה רגילה',
+      klass: 'clear',
+      reasons: ['עננות גבוהה מדי עלולה להסתיר את השקיעה']
+    };
+  }
+
+  // ברירת המחדל - שקיעה רגילה (רק אם לא התאימה לאף קטגוריה אחרת)
+  // אבל ננסה להימנע מזה - אם יש עננות כלשהי, זה כנראה "שקיעה יפה"
+  if (cloudTotal <= 30 && (midCloud + highCloud) < 3 && lowCloud < 15) {
+    return {
+      label: 'שקיעה רגילה',
+      klass: 'clear',
+      reasons: reasons.length ? reasons : ['שמיים נקיים מעננים']
+    };
+  }
+
+  // אם הגענו לכאן ולא התאימה לאף קטגוריה, נחזיר "שקיעה יפה" במקום "רגילה"
+  // כי ברוב המקרים עם עננות כלשהי השקיעה תהיה יפה
   return {
-    label: 'שקיעה רגילה',
-    klass: 'clear',
-    reasons: reasons.length ? reasons : ['תנאים סבירים לשקיעה']
+    label: 'שקיעה יפה',
+    klass: 'nice',
+    reasons: reasons.length ? reasons : ['תנאים טובים לשקיעה']
   };
 }
 
