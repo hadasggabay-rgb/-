@@ -862,38 +862,11 @@ function scoreSunsetPoint(forecast, idx) {
   const veryLikelyRain = pop >= 99 && precip >= 2.5; // רק אם כמעט בטוח שירד גשם כבד מאוד מאוד
   const veryLowVisibility = vis < 500; // רק ראות ממש ממש ממש גרועה (סערה חזקה)
 
-  // עננות גבוהה מאוד (95%+) חוסמת את השקיעה - לא ניתן לראות
-  // אם עננות כללית גבוהה מאוד (95%+) עם עננות נמוכה גבוהה (80%+) - לא ניתן לראות
-  const heavyOvercast = cloudTotal >= 95 && lowCloud >= 80;
-  // גם אם עננות כללית 100% או קרוב לזה - לא ניתן לראות
-  const veryHeavyOvercast = cloudTotal >= 100 || (cloudTotal >= 98 && lowCloud >= 70);
-  // עננות בינונית גבוהה מאוד (85%+) עם עננות כללית גבוהה (95%+) - לא ניתן לראות
-  const heavyMidCloud = midCloud >= 85 && cloudTotal >= 95;
-  
-  // עננות נמוכה גבוהה מדי (70%+) חוסמת את השקיעה - העננים האפורים כיסו אותה
-  const blockingLowCloud = lowCloud >= 70 && cloudTotal >= 85;
-  // עננות בינונית גבוהה מדי (60%+) עם עננות כללית גבוהה (85%+) - חוסמת את השקיעה
-  const blockingMidCloud = midCloud >= 60 && cloudTotal >= 85 && lowCloud >= 50;
-  // שילוב של עננות נמוכה ובינונית גבוהה - חוסם את השקיעה
-  const blockingCombo = lowCloud >= 65 && midCloud >= 55 && cloudTotal >= 85;
-  // עננות בינונית גבוהה מאוד (75%+) עם עננות כללית גבוהה (90%+) - חוסמת את השקיעה
-  const veryBlockingMidCloud = midCloud >= 75 && cloudTotal >= 90;
-  // עננות נמוכה גבוהה מאוד (75%+) - חוסמת את השקיעה
-  const veryBlockingLowCloud = lowCloud >= 75 && cloudTotal >= 88;
-
-  // בדיקה ראשונה - האם יש משהו שחוסם לחלוטין?
-  if (heavyRain || veryLikelyRain || veryLowVisibility || heavyOvercast || veryHeavyOvercast || heavyMidCloud || blockingLowCloud || blockingMidCloud || blockingCombo || veryBlockingMidCloud || veryBlockingLowCloud) {
-    return {
-      label: 'לא ניתן לראות אותה',
-      klass: 'bad',
-      reasons: ['עננות צפופה מאוד או תנאי ראות גרועים סביב שקיעה']
-    };
-  }
-
   // ============================================
-  // שקיעה מהממת - התנאים האידיאליים
+  // שקיעה מהממת - בדיקה ראשונה! (לפני "לא ניתן לראות")
   // ============================================
   // נתניה - עננות גבוהה גבוהה (80%+) עם עננות נמוכה נמוכה (10% או פחות) = שקיעה מהממת!
+  // זה יכול להיות גם עם עננות כללית גבוהה מאוד!
   if (highCloud >= 80 && lowCloud <= 10 && cloudTotal >= 85) {
     return { 
       label: 'שקיעה מהממת!', 
@@ -908,6 +881,82 @@ function scoreSunsetPoint(forecast, idx) {
       label: 'שקיעה מהממת!', 
       klass: 'good', 
       reasons: ['עננות גבוהה טובה עם עננות נמוכה מועטה - תנאים מצוינים לשקיעה צבעונית!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות גבוהה טובה (50%+) גם אם עננות נמוכה בינונית-גבוהה
+  // העננות הגבוהה תיצור צבעים יפים גם אם יש עננות נמוכה
+  if (highCloud >= 50 && lowCloud <= 75 && cloudTotal >= 85 && midCloud < 70) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה תיצור שקיעה צבעונית מהממת!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות גבוהה בינונית (40%+) אם עננות נמוכה לא חוסמת מדי
+  if (highCloud >= 40 && lowCloud <= 70 && cloudTotal >= 80 && midCloud < 65) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה עם תנאים טובים לשקיעה צבעונית!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות כללית גבוהה מאוד (90%+) אם יש עננות גבוהה טובה
+  // ועננות נמוכה לא חוסמת מדי
+  if (highCloud >= 35 && lowCloud <= 65 && cloudTotal >= 90 && midCloud < 60) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה תיצור שקיעה צבעונית מהממת גם עם עננות כללית גבוהה!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות בינונית-גבוהה טובה (30%+) אם עננות נמוכה סבירה
+  if ((midCloud + highCloud) >= 30 && lowCloud <= 60 && cloudTotal >= 85 && midCloud < 65 && highCloud >= 20) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות בינונית-גבוהה טובה תיצור שקיעה צבעונית מהממת!'] 
+    };
+  }
+
+  // ============================================
+  // לא ניתן לראות - רק במקרים קיצוניים באמת!
+  // ============================================
+  // עננות גבוהה מאוד (95%+) חוסמת את השקיעה - לא ניתן לראות
+  // אבל רק אם אין עננות גבוהה טובה שיכולה ליצור שקיעה מהממת
+  const heavyOvercast = cloudTotal >= 95 && lowCloud >= 80 && highCloud < 30;
+  // גם אם עננות כללית 100% או קרוב לזה - לא ניתן לראות
+  // אבל רק אם אין עננות גבוהה טובה
+  const veryHeavyOvercast = (cloudTotal >= 100 || (cloudTotal >= 98 && lowCloud >= 70)) && highCloud < 30;
+  // עננות בינונית גבוהה מאוד (85%+) עם עננות כללית גבוהה (95%+) - לא ניתן לראות
+  // אבל רק אם אין עננות גבוהה טובה
+  const heavyMidCloud = midCloud >= 85 && cloudTotal >= 95 && highCloud < 30;
+  
+  // עננות נמוכה גבוהה מדי (75%+) חוסמת את השקיעה - העננים האפורים כיסו אותה
+  // אבל רק אם אין עננות גבוהה טובה שיכולה ליצור שקיעה מהממת
+  const blockingLowCloud = lowCloud >= 75 && cloudTotal >= 88 && highCloud < 30;
+  // עננות בינונית גבוהה מדי (70%+) עם עננות כללית גבוהה (90%+) - חוסמת את השקיעה
+  // אבל רק אם אין עננות גבוהה טובה
+  const blockingMidCloud = midCloud >= 70 && cloudTotal >= 90 && lowCloud >= 60 && highCloud < 30;
+  // שילוב של עננות נמוכה ובינונית גבוהה - חוסם את השקיעה
+  // אבל רק אם אין עננות גבוהה טובה
+  const blockingCombo = lowCloud >= 70 && midCloud >= 65 && cloudTotal >= 90 && highCloud < 30;
+  // עננות בינונית גבוהה מאוד (80%+) עם עננות כללית גבוהה (95%+) - חוסמת את השקיעה
+  // אבל רק אם אין עננות גבוהה טובה
+  const veryBlockingMidCloud = midCloud >= 80 && cloudTotal >= 95 && highCloud < 30;
+  // עננות נמוכה גבוהה מאוד (80%+) - חוסמת את השקיעה
+  // אבל רק אם אין עננות גבוהה טובה
+  const veryBlockingLowCloud = lowCloud >= 80 && cloudTotal >= 92 && highCloud < 30;
+
+  // בדיקה - האם יש משהו שחוסם לחלוטין? (רק אחרי בדיקת "שקיעה מהממת")
+  if (heavyRain || veryLikelyRain || veryLowVisibility || heavyOvercast || veryHeavyOvercast || heavyMidCloud || blockingLowCloud || blockingMidCloud || blockingCombo || veryBlockingMidCloud || veryBlockingLowCloud) {
+    return {
+      label: 'לא ניתן לראות אותה',
+      klass: 'bad',
+      reasons: ['עננות צפופה מאוד או תנאי ראות גרועים סביב שקיעה']
     };
   }
 
@@ -951,6 +1000,34 @@ function scoreSunsetPoint(forecast, idx) {
   const greatLight = (midCloud + highCloud) >= 20 && cloudTotal <= 90 && lowCloud <= 50 && midCloud < 55;
   if (greatLight) {
     return { label: 'שקיעה מהממת!', klass: 'good', reasons };
+  }
+
+  // שקיעה מהממת - גם עם עננות כללית גבוהה (85-95%) אם יש עננות גבוהה טובה
+  // ועננות נמוכה לא חוסמת מדי
+  if (highCloud >= 30 && lowCloud <= 70 && cloudTotal >= 85 && cloudTotal <= 95 && midCloud < 70) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה תיצור שקיעה צבעונית מהממת גם עם עננות כללית גבוהה!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות נמוכה בינונית-גבוהה (60-75%) אם יש עננות גבוהה טובה
+  if (highCloud >= 25 && lowCloud >= 60 && lowCloud <= 75 && cloudTotal >= 85 && midCloud < 65) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה תיצור שקיעה צבעונית מהממת!'] 
+    };
+  }
+
+  // שקיעה מהממת - גם עם עננות בינונית בינונית-גבוהה (55-70%) אם יש עננות גבוהה טובה
+  if (highCloud >= 20 && midCloud >= 55 && midCloud < 70 && lowCloud <= 65 && cloudTotal >= 85) {
+    return { 
+      label: 'שקיעה מהממת!', 
+      klass: 'good', 
+      reasons: ['עננות גבוהה טובה תיצור שקיעה צבעונית מהממת!'] 
+    };
   }
 
   // ============================================
